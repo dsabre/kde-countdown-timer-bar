@@ -1,0 +1,20 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "daniele.sabre@gmail.com",
+                "Name": "Daniele Sabre"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Un timer rappresentato da un barra che si scarica.",
+        "Icon": "chronometer",
+        "Id": "com.dsabre.countdowntimerbar",
+        "Name": "Countdown timer bar",
+        "Version": "1.0",
+        "Website": ""
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-API": "declarativeappletscript",
+    "KPackageStructure": "Plasma/Applet"
+}
