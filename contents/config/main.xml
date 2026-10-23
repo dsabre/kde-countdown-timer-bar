@@ -8,7 +8,7 @@
       <default>3600</default>
     </entry>
     <entry name="tooltipString" type="String">
-      <default>TEMPO SCADUTO!</default>
+      <default>TIME'S UP!</default>
     </entry>
     <entry name="progressBarColor" type="String">
       <default>#00a6f4</default>

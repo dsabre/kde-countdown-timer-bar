@@ -9,7 +9,7 @@ import org.kde.plasma.plasma5support as Plasma5Support
 PlasmoidItem {
     id: root
 
-    // Configurazioni del Timer
+    // Timer configuration
     property int totalSeconds: plasmoid.configuration.totalSeconds
     property string tooltipString: plasmoid.configuration.tooltipString
     property string progressBarColor: plasmoid.configuration.progressBarColor
@@ -21,7 +21,7 @@ PlasmoidItem {
     property int currentSeconds: totalSeconds
     property bool isRunning: true
 
-    // Se un'impostazione cambia mentre il plasmoide è attivo, aggiorniamo il timer
+    // Update the timer if a setting changes while the plasmoid is active
     Connections {
         target: plasmoid.configuration
         function onTotalSecondsChanged() {
@@ -29,7 +29,7 @@ PlasmoidItem {
         }
     }
 
-    // Logica del Timer
+    // Timer logic
     Timer {
         id: countdownTimer
         interval: 1000
@@ -64,7 +64,7 @@ PlasmoidItem {
         }
     }
 
-    // Funzione di Reset
+    // Reset the timer
     function resetTimer() {
         root.currentSeconds = root.totalSeconds
         root.isRunning = true
@@ -77,7 +77,7 @@ PlasmoidItem {
 
         executable.exec(
             "notify-send " +
-            "'Countdown terminato' " +
+            "'Countdown timer bar' " +
             "'" + root.tooltipString.replace(/'/g, "'\\''") + "'"
         )
     }
@@ -88,14 +88,14 @@ PlasmoidItem {
         return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
     }
 
-    // Layout preferito (widget sul desktop o pannello espanso)
+    // Preferred layout (widget on the desktop or in an expanded panel)
     preferredRepresentation: fullRepresentation
 
     fullRepresentation: RowLayout {
-        // Spaziatura standard di Plasma
+        // Use Plasma's standard spacing
         spacing: Kirigami.Units.smallSpacing
-        
-        // Assicura che il widget abbia una dimensione minima sensata
+
+        // Ensure the widget has a sensible minimum size
         Layout.minimumWidth: 300
         Layout.minimumHeight: 50
 
@@ -103,25 +103,27 @@ PlasmoidItem {
             id: progressBar
             Layout.fillWidth: true
             Layout.alignment: Qt.AlignVCenter
-            
+
             from: 0
             to: root.totalSeconds
-            // Se il tempo è 0, forziamo il valore al massimo per vedere la barra piena
+
+            // When the timer reaches zero, force the value to the maximum
+            // so the progress bar appears full
             value: root.currentSeconds === 0 ? root.totalSeconds : root.currentSeconds
 
             contentItem: Rectangle {
                 id: barRect
                 width: parent.visualPosition * parent.width
                 height: parent.height
-                radius: 2 
-                
-                // Colore condizionale: se non è a zero usa il blu, 
-                // se è a zero il colore viene gestito dall'animazione
+                radius: 2
+
+                // Conditional color: use blue while the timer is running;
+                // when it reaches zero, the animation controls the appearance
                 color: root.currentSeconds > 0 ? root.progressBarColor : root.progressBarExpiredColor
 
                 opacity: root.currentSeconds > 0 ? 1.0 : undefined
 
-                // Animazione di lampeggio (opacità)
+                // Blinking animation (opacity)
                 SequentialAnimation on opacity {
                     running: root.currentSeconds === 0
                     loops: Animation.Infinite
@@ -138,13 +140,13 @@ PlasmoidItem {
 
         PlasmaComponents.Button {
             text: root.buttonText
-            icon.name: root.buttonIcon // Icona di sistema
+            icon.name: root.buttonIcon // System icon
             Layout.alignment: Qt.AlignVCenter
             onClicked: root.resetTimer()
         }
     }
-    
-    // Rappresentazione compatta (se minimizzato nel pannello)
+
+    // Compact representation (when minimized in the panel)
     compactRepresentation: PlasmaComponents.Label {
         text: formatTime(root.currentSeconds)
         font.bold: true
@@ -152,7 +154,7 @@ PlasmoidItem {
         verticalAlignment: Text.AlignVCenter
         color: root.currentSeconds > 0 ? root.progressBarColor : root.progressBarExpiredColor
         opacity: root.currentSeconds > 0 ? 1.0 : undefined
-        
+
         MouseArea {
             anchors.fill: parent
             onClicked: root.expanded = !root.expanded

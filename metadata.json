@@ -7,7 +7,7 @@
             }
         ],
         "Category": "Utilities",
-        "Description": "Un timer rappresentato da un barra che si scarica.",
+        "Description": "A lightweight KDE Plasma 6 widget that displays a countdown as a horizontal progress bar.",
         "Icon": "chronometer",
         "Id": "com.dsabre.countdowntimerbar",
         "Name": "Countdown timer bar",

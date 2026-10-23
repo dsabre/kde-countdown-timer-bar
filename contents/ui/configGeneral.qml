@@ -7,7 +7,7 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 Kirigami.FormLayout {
     id: page
 
-    // I nomi degli ID devono seguire il pattern: cfg_ + nome_proprietà_nel_main_xml
+    // ID names must follow the pattern: cfg_ + property_name_in_main_xml
     property alias cfg_totalSeconds: totalSeconds.value
     property alias cfg_tooltipString: tooltipString.text
     property alias cfg_progressBarColor: progressBarColor.text
@@ -17,47 +17,47 @@ Kirigami.FormLayout {
     property alias cfg_notifyOnExpire: notifyOnExpire.checked
 
     PlasmaComponents.Label {
-        Kirigami.FormData.label: "Impostazioni Timer"
+        Kirigami.FormData.label: "Countdown Timer Bar Settings"
         Kirigami.FormData.isSection: true
     }
 
     SpinBox {
         id: totalSeconds
-        Kirigami.FormData.label: "Secondi totali:"
+        Kirigami.FormData.label: "Duration (seconds):"
         from: 1
-        to: 86400 // 24 ore
+        to: 86400 // 24 hours
         stepSize: 1
     }
 
     TextField {
         id: tooltipString
-        Kirigami.FormData.label: "Messaggio finale:"
-        placeholderText: "Es: TEMPO SCADUTO!"
+        Kirigami.FormData.label: "Expiration message:"
+        placeholderText: "e.g. TIME'S UP!"
     }
 
     TextField {
         id: progressBarColor
-        Kirigami.FormData.label: "Colore barra (HEX):"
+        Kirigami.FormData.label: "Progress bar color (HEX):"
     }
 
     TextField {
         id: progressBarExpiredColor
-        Kirigami.FormData.label: "Colore scaduto (HEX):"
+        Kirigami.FormData.label: "Expired bar color (HEX):"
     }
 
     TextField {
         id: buttonText
-        Kirigami.FormData.label: "Testo pulsante:"
+        Kirigami.FormData.label: "Button text:"
     }
 
     TextField {
         id: buttonIcon
-        Kirigami.FormData.label: "Nome icona KDE:"
+        Kirigami.FormData.label: "KDE icon name:"
     }
 
     CheckBox {
         id: notifyOnExpire
-        Kirigami.FormData.label: "Notifica:"
-        text: "Avvisa quando il timer scade"
+        Kirigami.FormData.label: "Notifications:"
+        text: "Notify when the timer expires"
     }
 }
