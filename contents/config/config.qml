@@ -2,8 +2,8 @@ import org.kde.plasma.configuration
 
 ConfigModel {
     ConfigCategory {
-        name: i18n("General")  //Name given to the tab in config
-        icon: "configure"  //self-explanatory
-        source: "configGeneral.qml"  //path inside ui folder
-    }                                //which would represent
-}                                    //the layout of this config page
+        name: i18n("General")       // Tab label in the configuration dialog
+        icon: "configure"           // Configuration icon
+        source: "configGeneral.qml" // Path to the configuration page
+    }
+}

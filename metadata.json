@@ -11,8 +11,8 @@
         "Icon": "chronometer",
         "Id": "com.dsabre.countdowntimerbar",
         "Name": "Countdown timer bar",
-        "Version": "1.0",
-        "Website": ""
+        "Version": "2.0",
+        "Website": "https://github.com/dsabre/kde-countdown-timer-bar"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-API": "declarativeappletscript",

@@ -78,7 +78,7 @@ Open the widget's configuration dialog to customize its behavior.
                           from 1 to 86,400        
                           seconds                 
 
-  Final message           Message shown in the    `TEMPO SCADUTO!`
+  Final message           Message shown in the    `TIME'S UP!`
                           tooltip when the timer  
                           expires; also used as   
                           the notification body   
@@ -104,7 +104,7 @@ Open the widget's configuration dialog to customize its behavior.
                           expires                 
   -----------------------------------------------------------------------
 
-The notification title is currently **Countdown terminato**. The
+The notification title is currently **Countdown timer bar**. The
 notification body uses the configured final message.
 
 ## Usage
