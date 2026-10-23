@@ -22,5 +22,8 @@
     <entry name="buttonIcon" type="String">
       <default>chronometer-reset</default>
     </entry>
+    <entry name="notifyOnExpire" type="Bool">
+      <default>true</default>
+    </entry>
   </group>
 </kcfg>

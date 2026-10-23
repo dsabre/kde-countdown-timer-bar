@@ -4,6 +4,7 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.plasma5support as Plasma5Support
 
 PlasmoidItem {
     id: root
@@ -15,6 +16,7 @@ PlasmoidItem {
     property string progressBarExpiredColor: plasmoid.configuration.progressBarExpiredColor
     property string buttonText: plasmoid.configuration.buttonText
     property string buttonIcon: plasmoid.configuration.buttonIcon
+    property bool notifyOnExpire: plasmoid.configuration.notifyOnExpire
 
     property int currentSeconds: totalSeconds
     property bool isRunning: true
@@ -30,15 +32,35 @@ PlasmoidItem {
     // Logica del Timer
     Timer {
         id: countdownTimer
-        interval: 1000 // 1 secondo
+        interval: 1000
         repeat: true
         running: root.isRunning
+
         onTriggered: {
             if (root.currentSeconds > 0) {
                 root.currentSeconds -= 1
+
+                if (root.currentSeconds === 0) {
+                    root.isRunning = false
+                    root.notifyTimerExpired()
+                }
             } else {
                 root.isRunning = false
             }
+        }
+    }
+
+    Plasma5Support.DataSource {
+        id: executable
+        engine: "executable"
+        connectedSources: []
+
+        function exec(command) {
+            connectSource(command)
+        }
+
+        onNewData: function(source, data) {
+            disconnectSource(source)
         }
     }
 
@@ -46,6 +68,18 @@ PlasmoidItem {
     function resetTimer() {
         root.currentSeconds = root.totalSeconds
         root.isRunning = true
+    }
+
+    function notifyTimerExpired() {
+        if (!root.notifyOnExpire) {
+            return
+        }
+
+        executable.exec(
+            "notify-send " +
+            "'Countdown terminato' " +
+            "'" + root.tooltipString.replace(/'/g, "'\\''") + "'"
+        )
     }
 
     function formatTime(totalSeconds) {

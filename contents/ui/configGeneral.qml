@@ -14,6 +14,7 @@ Kirigami.FormLayout {
     property alias cfg_progressBarExpiredColor: progressBarExpiredColor.text
     property alias cfg_buttonText: buttonText.text
     property alias cfg_buttonIcon: buttonIcon.text
+    property alias cfg_notifyOnExpire: notifyOnExpire.checked
 
     PlasmaComponents.Label {
         Kirigami.FormData.label: "Impostazioni Timer"
@@ -52,5 +53,11 @@ Kirigami.FormLayout {
     TextField {
         id: buttonIcon
         Kirigami.FormData.label: "Nome icona KDE:"
+    }
+
+    CheckBox {
+        id: notifyOnExpire
+        Kirigami.FormData.label: "Notifica:"
+        text: "Avvisa quando il timer scade"
     }
 }
