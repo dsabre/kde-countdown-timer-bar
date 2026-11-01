@@ -7,12 +7,13 @@
             }
         ],
         "Category": "Utilities",
-        "Description": "A lightweight KDE Plasma 6 widget that displays a countdown as a horizontal progress bar.",
+        "Description": "A customizable countdown timer displayed as a horizontal progress bar.",
         "Icon": "chronometer",
         "Id": "com.dsabre.countdowntimerbar",
         "Name": "Countdown timer bar",
-        "Version": "2.0",
-        "Website": "https://github.com/dsabre/kde-countdown-timer-bar"
+        "Version": "2.1",
+        "Website": "https://github.com/dsabre/kde-countdown-timer-bar",
+        "License": "GPL-3.0-or-later"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-API": "declarativeappletscript",
