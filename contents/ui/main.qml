@@ -75,24 +75,55 @@ PlasmoidItem {
 
     // Restore timer state when the plasmoid starts
     function restoreTimer() {
+        const deadline = Number(root.deadline)
+        const remaining = Number(root.pausedRemaining)
+
         switch (root.timerState) {
             case "running":
-                if (root.deadline > 0) {
-                    root.updateTimer()
-                } else {
+                // A valid running timer must have a valid deadline.
+                if (
+                    !Number.isFinite(deadline) ||
+                    deadline <= 0 ||
+                    deadline > 8640000000000000
+                ) {
                     root.resetTimer()
+                    return
                 }
+
+                // Remove stale paused data.
+                if (root.pausedRemaining !== 0) {
+                    plasmoid.configuration.pausedRemaining = 0
+                }
+
+                root.updateTimer()
                 break
 
             case "paused":
-                root.currentSeconds = Math.max(0, root.pausedRemaining)
+                // A valid paused timer must have a positive,
+                // integer remaining duration within the configured duration.
+                if (
+                    !Number.isInteger(remaining) ||
+                    remaining <= 0 ||
+                    remaining > root.totalSeconds
+                ) {
+                    root.resetTimer()
+                    return
+                }
+
+                // A paused timer must not have an active deadline.
+                plasmoid.configuration.deadline = 0
+                root.currentSeconds = remaining
                 break
 
             case "expired":
+                // Normalize expired timer data.
+                plasmoid.configuration.deadline = 0
+                plasmoid.configuration.pausedRemaining = 0
                 root.currentSeconds = 0
                 break
 
             default:
+                // Unknown state: restore a fresh timer.
                 root.resetTimer()
         }
     }
