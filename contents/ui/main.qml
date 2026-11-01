@@ -20,26 +20,30 @@ PlasmoidItem {
     property bool showButtonIcon: plasmoid.configuration.showButtonIcon
     property bool showTimerValue: plasmoid.configuration.showTimerValue
     property bool showPercentage: plasmoid.configuration.showPercentage
-    property bool isPaused: false
     property bool allowPause: plasmoid.configuration.allowPause
 
+    // Persistent timer state
+    property string timerState: plasmoid.configuration.timerState
+    property double deadline: plasmoid.configuration.deadline
+    property int pausedRemaining: plasmoid.configuration.pausedRemaining
+
+    // Display state
     property int currentSeconds: totalSeconds
-    property bool isRunning: true
+
+    readonly property bool isPaused: root.timerState === "paused"
+    readonly property bool isRunning: root.timerState === "running"
 
     // Update the timer if a setting changes while the plasmoid is active
     Connections {
         target: plasmoid.configuration
+
         function onTotalSecondsChanged() {
             root.resetTimer()
         }
-    }
-
-    Connections {
-        target: plasmoid.configuration
 
         function onAllowPauseChanged() {
-            if (!root.allowPause) {
-                root.isPaused = false
+            if (!root.allowPause && root.isPaused) {
+                root.resumeTimer()
             }
         }
     }
@@ -47,22 +51,12 @@ PlasmoidItem {
     // Timer logic
     Timer {
         id: countdownTimer
+
         interval: 1000
         repeat: true
-        running: root.isRunning && !root.isPaused
+        running: root.isRunning
 
-        onTriggered: {
-            if (root.currentSeconds > 0) {
-                root.currentSeconds -= 1
-
-                if (root.currentSeconds === 0) {
-                    root.isRunning = false
-                    root.notifyTimerExpired()
-                }
-            } else {
-                root.isRunning = false
-            }
-        }
+        onTriggered: root.updateTimer()
     }
 
     Plasma5Support.DataSource {
@@ -79,11 +73,109 @@ PlasmoidItem {
         }
     }
 
-    // Reset the timer
+    // Restore timer state when the plasmoid starts
+    function restoreTimer() {
+        switch (root.timerState) {
+            case "running":
+                if (root.deadline > 0) {
+                    root.updateTimer()
+                } else {
+                    root.resetTimer()
+                }
+                break
+
+            case "paused":
+                root.currentSeconds = Math.max(0, root.pausedRemaining)
+                break
+
+            case "expired":
+                root.currentSeconds = 0
+                break
+
+            default:
+                root.resetTimer()
+        }
+    }
+
+    // Update remaining time using the actual deadline
+    function updateTimer() {
+        let remaining = Math.ceil(
+            (root.deadline - Date.now()) / 1000
+        )
+
+        if (remaining <= 0) {
+            root.expireTimer(true)
+            return
+        }
+
+        root.currentSeconds = remaining
+    }
+
+    // Reset countdown
     function resetTimer() {
-        root.currentSeconds = root.totalSeconds
-        root.isPaused = false
-        root.isRunning = true
+        let duration = Math.max(0, root.totalSeconds)
+
+        root.currentSeconds = duration
+
+        plasmoid.configuration.timerState = duration > 0
+        ? "running"
+        : "expired"
+
+        plasmoid.configuration.deadline = duration > 0
+        ? Date.now() + duration * 1000
+        : 0
+
+        plasmoid.configuration.pausedRemaining = 0
+
+        if (duration === 0) {
+            root.currentSeconds = 0
+        }
+    }
+
+    // Pause countdown
+    function pauseTimer() {
+        if (!root.isRunning || root.currentSeconds <= 0) {
+            return
+        }
+
+        // Synchronize before pausing
+        root.updateTimer()
+
+        if (!root.isRunning) {
+            return
+        }
+
+        plasmoid.configuration.pausedRemaining = root.currentSeconds
+        plasmoid.configuration.deadline = 0
+        plasmoid.configuration.timerState = "paused"
+    }
+
+    // Resume countdown
+    function resumeTimer() {
+        if (!root.isPaused || root.pausedRemaining <= 0) {
+            return
+        }
+
+        root.currentSeconds = root.pausedRemaining
+
+        plasmoid.configuration.deadline =
+        Date.now() + root.pausedRemaining * 1000
+
+        plasmoid.configuration.pausedRemaining = 0
+        plasmoid.configuration.timerState = "running"
+    }
+
+    // Expire countdown
+    function expireTimer(notify) {
+        plasmoid.configuration.timerState = "expired"
+        plasmoid.configuration.deadline = 0
+        plasmoid.configuration.pausedRemaining = 0
+
+        root.currentSeconds = 0
+
+        if (notify) {
+            root.notifyTimerExpired()
+        }
     }
 
     function notifyTimerExpired() {
@@ -197,7 +289,11 @@ PlasmoidItem {
             Layout.alignment: Qt.AlignVCenter
 
             onClicked: {
-                root.isPaused = !root.isPaused
+                if (root.isPaused) {
+                    root.resumeTimer()
+                } else {
+                    root.pauseTimer()
+                }
             }
         }
 
@@ -234,5 +330,9 @@ PlasmoidItem {
             PropertyAnimation { from: 1.0; to: 0.2; duration: 500; easing.type: Easing.InOutQuad }
             PropertyAnimation { from: 0.2; to: 1.0; duration: 500; easing.type: Easing.InOutQuad }
         }
+    }
+
+    Component.onCompleted: {
+        root.restoreTimer()
     }
 }
