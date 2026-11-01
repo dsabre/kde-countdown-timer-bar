@@ -2,6 +2,6 @@
 
 set -euo pipefail
 
-ID=$(cat metadata.json |jq -r ".KPlugin.Id")
+ID=$(jq -r '.KPlugin.Id' metadata.json)
 
 kpackagetool6 --type Plasma/Applet --remove $ID

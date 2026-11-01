@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Countdown Timer Bar package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Countdown Timer Bar 2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-01 22:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:19
+msgid "Duration (seconds):"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:27
+msgid "Expiration message:"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:28
+msgid "TIME'S UP!"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:33
+msgid "Notify when the timer expires"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/main.qml:195
+msgid "Resume"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/main.qml:195
+msgid "Pause"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:21
+msgid "Progress bar color:"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:26
+msgid "Expired bar color:"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:31
+msgid "Timer:"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:32
+msgid "Show timer value"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:37
+msgid "Show percentage instead of time"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:20
+msgid "Button text:"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:25
+msgid "Button icon name:"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:30
+msgid "Display button icon"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:35
+msgid "Allow timer pause"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/config/config.qml:5
+msgid "General"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/config/config.qml:11
+msgid "Appearance"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/config/config.qml:17
+msgid "Controls"
+msgstr ""
