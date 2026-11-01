@@ -2,9 +2,11 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 # Build translations
 ./translate/build.sh
 
 # Install plasmoid
 kpackagetool6 --type Plasma/Applet --install .
-# plasmapkg2 -i .
