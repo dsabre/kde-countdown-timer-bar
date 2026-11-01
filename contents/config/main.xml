@@ -25,5 +25,17 @@
     <entry name="notifyOnExpire" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="showButtonIcon" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showTimerValue" type="Bool">
+      <default>true</default>
+    </entry>
+    <entry name="showPercentage" type="Bool">
+      <default>false</default>
+    </entry>
+    <entry name="allowPause" type="Bool">
+      <default>true</default>
+    </entry>
   </group>
 </kcfg>

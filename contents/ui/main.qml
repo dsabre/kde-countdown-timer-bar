@@ -17,6 +17,11 @@ PlasmoidItem {
     property string buttonText: plasmoid.configuration.buttonText
     property string buttonIcon: plasmoid.configuration.buttonIcon
     property bool notifyOnExpire: plasmoid.configuration.notifyOnExpire
+    property bool showButtonIcon: plasmoid.configuration.showButtonIcon
+    property bool showTimerValue: plasmoid.configuration.showTimerValue
+    property bool showPercentage: plasmoid.configuration.showPercentage
+    property bool isPaused: false
+    property bool allowPause: plasmoid.configuration.allowPause
 
     property int currentSeconds: totalSeconds
     property bool isRunning: true
@@ -29,12 +34,22 @@ PlasmoidItem {
         }
     }
 
+    Connections {
+        target: plasmoid.configuration
+
+        function onAllowPauseChanged() {
+            if (!root.allowPause) {
+                root.isPaused = false
+            }
+        }
+    }
+
     // Timer logic
     Timer {
         id: countdownTimer
         interval: 1000
         repeat: true
-        running: root.isRunning
+        running: root.isRunning && !root.isPaused
 
         onTriggered: {
             if (root.currentSeconds > 0) {
@@ -67,6 +82,7 @@ PlasmoidItem {
     // Reset the timer
     function resetTimer() {
         root.currentSeconds = root.totalSeconds
+        root.isPaused = false
         root.isRunning = true
     }
 
@@ -83,9 +99,29 @@ PlasmoidItem {
     }
 
     function formatTime(totalSeconds) {
-        let m = Math.floor(totalSeconds / 60);
-        let s = totalSeconds % 60;
-        return (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+        let h = Math.floor(totalSeconds / 3600)
+        let m = Math.floor((totalSeconds % 3600) / 60)
+        let s = totalSeconds % 60
+
+        let mm = m < 10 ? "0" + m : m
+        let ss = s < 10 ? "0" + s : s
+
+        if (h > 0) {
+            let hh = h < 10 ? "0" + h : h
+            return hh + ":" + mm + ":" + ss
+        }
+
+        return mm + ":" + ss
+    }
+
+    function formatPercentage() {
+        if (root.totalSeconds <= 0) {
+            return "0%"
+        }
+
+        return Math.ceil(
+            (root.currentSeconds / root.totalSeconds) * 100
+        ) + "%"
     }
 
     // Preferred layout (widget on the desktop or in an expanded panel)
@@ -138,9 +174,38 @@ PlasmoidItem {
             }
         }
 
+        PlasmaComponents.Label {
+            visible: root.showTimerValue
+
+            text: root.showPercentage
+            ? root.formatPercentage()
+            : root.formatTime(root.currentSeconds)
+
+            Layout.alignment: Qt.AlignVCenter
+            font.bold: true
+        }
+
+        PlasmaComponents.Button {
+            visible: root.allowPause
+
+            icon.name: root.isPaused
+            ? "media-playback-start"
+            : "media-playback-pause"
+
+            text: root.isPaused ? "Resume" : "Pause"
+
+            enabled: root.currentSeconds > 0
+
+            Layout.alignment: Qt.AlignVCenter
+
+            onClicked: {
+                root.isPaused = !root.isPaused
+            }
+        }
+
         PlasmaComponents.Button {
             text: root.buttonText
-            icon.name: root.buttonIcon // System icon
+            icon.name: root.showButtonIcon ? root.buttonIcon : ""
             Layout.alignment: Qt.AlignVCenter
             onClicked: root.resetTimer()
         }
@@ -148,7 +213,12 @@ PlasmoidItem {
 
     // Compact representation (when minimized in the panel)
     compactRepresentation: PlasmaComponents.Label {
-        text: formatTime(root.currentSeconds)
+        text: root.showTimerValue
+        ? (root.showPercentage
+        ? root.formatPercentage()
+        : root.formatTime(root.currentSeconds))
+        : ""
+
         font.bold: true
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
