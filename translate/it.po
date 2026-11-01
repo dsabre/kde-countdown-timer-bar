@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Countdown Timer Bar 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-01 22:21+0100\n"
+"POT-Creation-Date: 2026-11-01 22:41+0100\n"
 "Language: it\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,14 +23,6 @@ msgstr "TEMPO SCADUTO!"
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:33
 msgid "Notify when the timer expires"
 msgstr "Notifica alla scadenza del timer"
-
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/main.qml:195
-msgid "Resume"
-msgstr "Riprendi"
-
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/main.qml:195
-msgid "Pause"
-msgstr "Pausa"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:21
 msgid "Progress bar color:"
@@ -79,6 +71,12 @@ msgstr "Aspetto"
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/config/config.qml:17
 msgid "Controls"
 msgstr "Controlli"
+
+#~ msgid "Resume"
+#~ msgstr "Riprendi"
+
+#~ msgid "Pause"
+#~ msgstr "Pausa"
 
 #~ msgid "Reset"
 #~ msgstr "Reimposta"

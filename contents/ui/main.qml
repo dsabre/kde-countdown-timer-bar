@@ -192,8 +192,6 @@ PlasmoidItem {
             ? "media-playback-start"
             : "media-playback-pause"
 
-            text: root.isPaused ? i18n("Resume") : i18n("Pause")
-
             enabled: root.currentSeconds > 0
 
             Layout.alignment: Qt.AlignVCenter

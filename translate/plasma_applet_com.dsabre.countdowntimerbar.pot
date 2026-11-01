@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Countdown Timer Bar 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-01 22:21+0100\n"
+"POT-Creation-Date: 2026-11-01 22:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,14 +31,6 @@ msgstr ""
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:33
 msgid "Notify when the timer expires"
-msgstr ""
-
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/main.qml:195
-msgid "Resume"
-msgstr ""
-
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/main.qml:195
-msgid "Pause"
 msgstr ""
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:21
