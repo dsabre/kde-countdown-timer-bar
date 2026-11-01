@@ -10,10 +10,10 @@
     <entry name="tooltipString" type="String">
       <default>TIME'S UP!</default>
     </entry>
-    <entry name="progressBarColor" type="String">
+    <entry name="progressBarColor" type="Color">
       <default>#00a6f4</default>
     </entry>
-    <entry name="progressBarExpiredColor" type="String">
+    <entry name="progressBarExpiredColor" type="Color">
       <default>#ff0000</default>
     </entry>
     <entry name="buttonText" type="String">
