@@ -4,6 +4,7 @@ import org.kde.plasma.plasmoid
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
 import org.kde.plasma.plasma5support as Plasma5Support
+import org.kde.plasma.core 2.0 as PlasmaCore
 
 PlasmoidItem {
     id: root
@@ -32,6 +33,8 @@ PlasmoidItem {
 
     readonly property bool isPaused: root.timerState === "paused"
     readonly property bool isRunning: root.timerState === "running"
+
+    readonly property bool showResetButton: root.buttonText.trim().length > 0 || (root.showButtonIcon && root.buttonIcon.trim().length > 0)
 
     // Update the timer if a setting changes while the plasmoid is active
     Connections {
@@ -276,7 +279,9 @@ PlasmoidItem {
     }
 
     // Preferred layout (widget on the desktop or in an expanded panel)
-    preferredRepresentation: fullRepresentation
+    preferredRepresentation: plasmoid.formFactor === PlasmaCore.Types.Vertical
+        ? compactRepresentation
+        : fullRepresentation
 
     fullRepresentation: RowLayout {
         // Use Plasma's standard spacing
@@ -377,37 +382,155 @@ PlasmoidItem {
         }
 
         PlasmaComponents.Button {
+            visible: root.showResetButton
             text: root.buttonText
             icon.name: root.showButtonIcon ? root.buttonIcon : ""
             Layout.alignment: Qt.AlignVCenter
             onClicked: root.resetTimer()
         }
-    }
-
-    // Compact representation (when minimized in the panel)
-    compactRepresentation: PlasmaComponents.Label {
-        text: root.showTimerValue
-        ? (root.showPercentage
-        ? root.formatPercentage()
-        : root.formatTime(root.currentSeconds))
-        : ""
-
-        font.bold: true
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        color: root.currentSeconds > 0 ? root.progressBarColor : root.progressBarExpiredColor
-        opacity: root.currentSeconds > 0 ? 1.0 : undefined
 
         MouseArea {
             anchors.fill: parent
-            onClicked: root.expanded = !root.expanded
+            enabled: !root.showResetButton
+
+            onClicked: root.resetTimer()
+        }
+    }
+
+    // Compact representation (when minimized in the panel)
+
+    compactRepresentation: Item {
+        id: compactRoot
+
+        implicitWidth: 42
+        implicitHeight: 42
+
+        property real progress: root.totalSeconds > 0
+        ? Math.max(0, Math.min(1, root.currentSeconds / root.totalSeconds))
+        : 0
+
+        opacity: 1.0
+
+        Canvas {
+            id: ring
+
+            anchors.fill: parent
+            anchors.margins: 2
+
+            property real progress: compactRoot.progress
+
+            property color ringColor: root.currentSeconds > 0
+            ? root.progressBarColor
+            : root.progressBarExpiredColor
+
+            onProgressChanged: requestPaint()
+            onRingColorChanged: requestPaint()
+
+            onPaint: {
+                const ctx = getContext("2d")
+                const centerX = width / 2
+                const centerY = height / 2
+                const lineWidth = 3.5
+                const radius = Math.min(width, height) / 2 - lineWidth / 2
+
+                ctx.clearRect(0, 0, width, height)
+
+                // Background ring
+                ctx.beginPath()
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
+                ctx.strokeStyle = Qt.rgba(
+                    Kirigami.Theme.textColor.r,
+                    Kirigami.Theme.textColor.g,
+                    Kirigami.Theme.textColor.b,
+                    0.2
+                )
+                ctx.lineWidth = lineWidth
+                ctx.stroke()
+
+                // Progress ring
+                if (progress > 0 || root.currentSeconds === 0) {
+                    const startAngle = -Math.PI / 2
+                    const endAngle = root.currentSeconds === 0
+                    ? startAngle + Math.PI * 2
+                    : startAngle + Math.PI * 2 * progress
+
+                    ctx.beginPath()
+                    ctx.arc(
+                        centerX,
+                        centerY,
+                        radius,
+                        startAngle,
+                        endAngle,
+                        false
+                    )
+                    ctx.strokeStyle = ringColor
+                    ctx.lineWidth = lineWidth
+                    ctx.lineCap = "round"
+                    ctx.stroke()
+                }
+            }
         }
 
-        SequentialAnimation on opacity {
+        PlasmaComponents.Label {
+            anchors.centerIn: parent
+
+            visible: root.showTimerValue
+
+            text: root.showPercentage
+            ? root.formatPercentage()
+            : root.formatTime(root.currentSeconds)
+
+            font.pixelSize: 11
+            font.bold: true
+            fontSizeMode: Text.Fit
+            minimumPixelSize: 6
+
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+
+        SequentialAnimation {
             running: root.currentSeconds === 0
             loops: Animation.Infinite
-            PropertyAnimation { from: 1.0; to: 0.2; duration: 500; easing.type: Easing.InOutQuad }
-            PropertyAnimation { from: 0.2; to: 1.0; duration: 500; easing.type: Easing.InOutQuad }
+
+            PropertyAnimation {
+                target: compactRoot
+                property: "opacity"
+                from: 1.0
+                to: 0.2
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+
+            PropertyAnimation {
+                target: compactRoot
+                property: "opacity"
+                from: 0.2
+                to: 1.0
+                duration: 500
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        Connections {
+            target: root
+
+            function onCurrentSecondsChanged() {
+                if (root.currentSeconds > 0) {
+                    compactRoot.opacity = 1.0
+                }
+            }
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                if (root.showResetButton) {
+                    root.expanded = !root.expanded
+                } else {
+                    root.resetTimer()
+                }
+            }
         }
     }
 

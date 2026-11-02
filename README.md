@@ -1,31 +1,38 @@
 
 # Countdown Timer Bar
 
-A lightweight and customizable KDE Plasma 6 widget that displays a countdown as a horizontal progress bar.
+A lightweight and customizable KDE Plasma 6 widget that displays a countdown as a progress indicator.
 
-The timer gradually decreases as time passes. When it reaches zero, the progress bar changes to the configured expiration color and starts blinking.
+The widget uses a horizontal progress bar when displayed in its expanded representation and a circular progress indicator in its compact representation, making it suitable for both horizontal and vertical panels.
+
+The timer gradually decreases as time passes. When it reaches zero, the progress indicator changes to the configured expiration color and starts blinking.
 
 The widget supports pausing and resuming the countdown, desktop notifications, and persistent timer state across Plasma restarts.
 
 ## Features
 
-- **Visual countdown:** a horizontal progress bar that decreases as the timer runs.
-- **Expiration indicator:** the bar changes to the configured expiration color and blinks when the countdown expires.
+- **Visual countdown:** a horizontal progress bar in the expanded representation and a circular progress indicator in the compact representation.
+- **Panel orientation support:** adapts to horizontal and vertical panels through Plasma's compact and expanded representations.
+- **Expiration indicator:** the progress indicator changes to the configured expiration color and blinks when the countdown expires.
 - **Desktop notifications:** optionally sends a notification when the countdown expires.
 - **Pause and resume:** temporarily pause the countdown and resume it later.
 - **Persistent timer:** restores the timer state after Plasma restarts, including the remaining time and pause state.
 - **Automatic reset after long inactivity:** automatically starts a fresh countdown if the previous timer has been expired for more than twice its configured duration.
-- **Compact representation:** displays the remaining time or percentage when the widget is in its compact form.
+- **Compact representation:** displays the remaining time or percentage in the center of the circular indicator, depending on the configuration.
 - **Configurable appearance and behavior:**
   - Countdown duration, from 1 second to 24 hours.
-  - Normal and expired bar colors.
+  - Normal and expired progress indicator colors.
   - Reset button text and KDE icon.
   - Show or hide the reset button icon.
   - Show or hide the remaining time.
   - Show or hide the countdown percentage.
   - Enable or disable pause and resume.
   - Enable or disable expiration notifications.
-- **Reset button:** restarts the countdown using the configured duration.
+- **Conditional reset button:** automatically hides the reset button when both its text and icon are empty or disabled.
+- **Context-aware reset interaction:**
+  - When the reset button is visible, clicking the compact indicator opens the expanded representation.
+  - When the reset button is hidden, clicking the progress indicator directly resets the timer.
+  - Clicking the expanded progress bar resets the timer only when the reset button is hidden.
 
 ## Requirements
 
@@ -56,7 +63,10 @@ kpackagetool6 --type Plasma/Applet --install .
 
 After installation, add **Countdown Timer Bar** to your desktop or panel using Plasma's normal widget-adding interface.
 
-The widget is designed for horizontal panels.
+The widget automatically uses the appropriate representation depending on the available space:
+
+- **Expanded representation:** horizontal progress bar with timer controls.
+- **Compact representation:** circular progress indicator, suitable for narrow and vertical panels.
 
 ## Configuration
 
@@ -74,10 +84,12 @@ Open the widget's configuration dialog to customize its behavior.
 
 | Setting | Description | Default |
 |---|---|---|
-| Bar color | Color of the progress bar while the timer is running | `#00a6f4` |
+| Bar color | Color of the progress indicator while the timer is running | `#00a6f4` |
 | Expired bar color | Color used when the countdown expires | `#ff0000` |
 | Button text | Label displayed on the reset button | `Reset` |
 | Button icon | KDE/System icon name for the reset button | `chronometer-reset` |
+
+The reset button is automatically hidden when its text is empty and its icon is disabled or unavailable.
 
 ### Controls
 
@@ -85,23 +97,45 @@ Open the widget's configuration dialog to customize its behavior.
 |---|---|---|
 | Show button icon | Display the reset button icon | Enabled |
 | Show timer value | Display the remaining time | Enabled |
-| Show percentage | Display the countdown percentage | Disabled |
+| Show percentage | Display the countdown percentage instead of the remaining time | Disabled |
 | Allow pause | Enable pause and resume controls | Enabled |
 
 ## Usage
 
-1. Add the widget to your desktop or horizontal panel.
+1. Add the widget to your desktop or panel.
 2. Open its settings and choose the countdown duration and appearance.
 3. Let the countdown run.
 4. Use the pause button to temporarily stop the countdown.
 5. Press the pause button again to resume.
 6. Click **Reset** to restart the countdown using the configured duration.
 
+### Expanded representation
+
+The expanded representation displays a horizontal progress bar and the available timer controls.
+
+When the reset button is visible, clicking the progress bar does not trigger a reset. Use the reset button instead.
+
+When the reset button is hidden, clicking the progress bar resets the countdown.
+
+### Compact representation
+
+The compact representation displays a circular progress indicator.
+
+The center of the circle displays either the remaining time or the countdown percentage, depending on the configuration. The text can also be hidden.
+
+When the reset button is visible, clicking the circle opens the expanded representation, where the timer controls are available.
+
+When the reset button is hidden, clicking the circle directly resets the countdown.
+
+### Timer expiration
+
 When the timer reaches zero:
 
-- The progress bar changes to the configured expiration color.
-- The bar starts blinking.
+- The progress indicator changes to the configured expiration color.
+- The progress indicator starts blinking.
 - A desktop notification is sent if notifications are enabled.
+
+The blinking animation stops and the indicator returns to full opacity when the timer is reset.
 
 ### Timer persistence
 
@@ -219,7 +253,7 @@ The uninstall script reads the package ID from `metadata.json` and removes it us
 
 The widget is implemented in QML using Qt Quick and KDE Plasma components.
 
-- `contents/ui/main.qml` contains the countdown logic, progress bar, expiration animation, compact representation, pause/resume controls, reset action, and notification trigger.
+- `contents/ui/main.qml` contains the countdown logic, progress indicators, expiration animation, compact representation, pause/resume controls, reset action, and notification trigger.
 - `contents/ui/configGeneral.qml` defines the general settings page.
 - `contents/ui/configAppearance.qml` defines appearance settings.
 - `contents/ui/configControls.qml` defines display and control options.
@@ -235,7 +269,7 @@ Paused timers store their remaining duration separately, allowing them to be res
 
 Expired timers store their expiration timestamp, which is used to determine whether a fresh countdown should be started after a long period of inactivity.
 
-The progress bar is rendered using the current remaining time, ensuring that its visual state is restored correctly even when the timer is paused.
+The progress indicators are rendered using the current remaining time, ensuring that their visual state is restored correctly even when the timer is paused.
 
 Desktop notifications are triggered through Plasma 6's `org.kde.plasma.plasma5support` data source and its `executable` engine, which invokes `notify-send`.
 
