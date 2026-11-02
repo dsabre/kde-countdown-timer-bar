@@ -3,7 +3,6 @@ import QtQuick.Layouts
 import org.kde.plasma.plasmoid
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami as Kirigami
-import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.plasma5support as Plasma5Support
 
 PlasmoidItem {
@@ -26,6 +25,7 @@ PlasmoidItem {
     property string timerState: plasmoid.configuration.timerState
     property double deadline: plasmoid.configuration.deadline
     property int pausedRemaining: plasmoid.configuration.pausedRemaining
+    property double expiredAt: plasmoid.configuration.expiredAt
 
     // Display state
     property int currentSeconds: totalSeconds
@@ -75,8 +75,11 @@ PlasmoidItem {
 
     // Restore timer state when the plasmoid starts
     function restoreTimer() {
+        const now = Date.now()
         const deadline = Number(root.deadline)
         const remaining = Number(root.pausedRemaining)
+        const expiredAt = Number(root.expiredAt)
+        const duration = Math.max(0, root.totalSeconds)
 
         switch (root.timerState) {
             case "running":
@@ -85,6 +88,16 @@ PlasmoidItem {
                     !Number.isFinite(deadline) ||
                     deadline <= 0 ||
                     deadline > 8640000000000000
+                ) {
+                    root.resetTimer()
+                    return
+                }
+
+                // Reset if the timer expired more than twice its duration ago.
+                if (
+                    duration > 0 &&
+                    deadline <= now &&
+                    now - deadline > duration * 2000
                 ) {
                     root.resetTimer()
                     return
@@ -104,7 +117,7 @@ PlasmoidItem {
                 if (
                     !Number.isInteger(remaining) ||
                     remaining <= 0 ||
-                    remaining > root.totalSeconds
+                    remaining > duration
                 ) {
                     root.resetTimer()
                     return
@@ -116,6 +129,17 @@ PlasmoidItem {
                 break
 
             case "expired":
+                // Reset if the timer has been expired for too long.
+                if (
+                    duration > 0 &&
+                    Number.isFinite(expiredAt) &&
+                    expiredAt > 0 &&
+                    now - expiredAt > duration * 2000
+                ) {
+                    root.resetTimer()
+                    return
+                }
+
                 // Normalize expired timer data.
                 plasmoid.configuration.deadline = 0
                 plasmoid.configuration.pausedRemaining = 0
@@ -158,6 +182,8 @@ PlasmoidItem {
 
         plasmoid.configuration.pausedRemaining = 0
 
+        plasmoid.configuration.expiredAt = 0
+
         if (duration === 0) {
             root.currentSeconds = 0
         }
@@ -194,6 +220,7 @@ PlasmoidItem {
 
         plasmoid.configuration.pausedRemaining = 0
         plasmoid.configuration.timerState = "running"
+        plasmoid.configuration.expiredAt = 0
     }
 
     // Expire countdown
@@ -201,6 +228,7 @@ PlasmoidItem {
         plasmoid.configuration.timerState = "expired"
         plasmoid.configuration.deadline = 0
         plasmoid.configuration.pausedRemaining = 0
+        plasmoid.configuration.expiredAt = Date.now()
 
         root.currentSeconds = 0
 
@@ -268,26 +296,46 @@ PlasmoidItem {
 
             // When the timer reaches zero, force the value to the maximum
             // so the progress bar appears full
-            value: root.currentSeconds === 0 ? root.totalSeconds : root.currentSeconds
+            value: root.currentSeconds === 0
+                ? root.totalSeconds
+                : root.currentSeconds
 
-            contentItem: Rectangle {
-                id: barRect
-                width: parent.visualPosition * parent.width
-                height: parent.height
-                radius: 2
+            contentItem: Item {
+                Rectangle {
+                    width: root.currentSeconds === 0
+                        ? parent.width
+                        : root.totalSeconds > 0
+                            ? parent.width * root.currentSeconds / root.totalSeconds
+                            : 0
 
-                // Conditional color: use blue while the timer is running;
-                // when it reaches zero, the animation controls the appearance
-                color: root.currentSeconds > 0 ? root.progressBarColor : root.progressBarExpiredColor
+                    height: parent.height
+                    radius: 2
+                    anchors.left: parent.left
 
-                opacity: root.currentSeconds > 0 ? 1.0 : undefined
+                    color: root.currentSeconds > 0
+                    ? root.progressBarColor
+                    : root.progressBarExpiredColor
 
-                // Blinking animation (opacity)
-                SequentialAnimation on opacity {
-                    running: root.currentSeconds === 0
-                    loops: Animation.Infinite
-                    PropertyAnimation { from: 1.0; to: 0.2; duration: 500; easing.type: Easing.InOutQuad }
-                    PropertyAnimation { from: 0.2; to: 1.0; duration: 500; easing.type: Easing.InOutQuad }
+                    opacity: root.currentSeconds > 0 ? 1.0 : undefined
+
+                    SequentialAnimation on opacity {
+                        running: root.currentSeconds === 0
+                        loops: Animation.Infinite
+
+                        PropertyAnimation {
+                            from: 1.0
+                            to: 0.2
+                            duration: 500
+                            easing.type: Easing.InOutQuad
+                        }
+
+                        PropertyAnimation {
+                            from: 0.2
+                            to: 1.0
+                            duration: 500
+                            easing.type: Easing.InOutQuad
+                        }
+                    }
                 }
             }
 
@@ -364,6 +412,8 @@ PlasmoidItem {
     }
 
     Component.onCompleted: {
-        root.restoreTimer()
+        Qt.callLater(function() {
+            root.restoreTimer()
+        })
     }
 }

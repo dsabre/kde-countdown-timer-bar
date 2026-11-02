@@ -13,7 +13,8 @@ The widget supports pausing and resuming the countdown, desktop notifications, a
 - **Expiration indicator:** the bar changes to the configured expiration color and blinks when the countdown expires.
 - **Desktop notifications:** optionally sends a notification when the countdown expires.
 - **Pause and resume:** temporarily pause the countdown and resume it later.
-- **Persistent timer:** automatically restores the timer state after Plasma restarts, including its remaining time and pause state.
+- **Persistent timer:** restores the timer state after Plasma restarts, including the remaining time and pause state.
+- **Automatic reset after long inactivity:** automatically starts a fresh countdown if the previous timer has been expired for more than twice its configured duration.
 - **Compact representation:** displays the remaining time or percentage when the widget is in its compact form.
 - **Configurable appearance and behavior:**
   - Countdown duration, from 1 second to 24 hours.
@@ -28,7 +29,7 @@ The widget supports pausing and resuming the countdown, desktop notifications, a
 
 ## Requirements
 
-- KDE Plasma 6
+- KDE Plasma 6.
 - `kpackagetool6` to install and uninstall the widget.
 - `plasmoidviewer` to run the widget during development.
 - `notify-send` for desktop notifications.
@@ -112,7 +113,11 @@ When Plasma restarts, the widget restores the previous state:
 - **Paused:** restores the remaining time without starting the countdown.
 - **Expired:** remains expired without sending the notification again.
 
-Changing the configured countdown duration resets the timer and starts a new countdown.
+If an expired timer has been inactive for more than twice its configured duration, the widget automatically starts a fresh countdown when its state is restored.
+
+This behavior helps prevent an old expired timer from remaining visible indefinitely after a long period of inactivity.
+
+Changing the configured countdown duration resets the timer and starts a new countdown, including when the timer is paused.
 
 ## Translations
 
@@ -120,8 +125,8 @@ The widget uses gettext for translations.
 
 Currently available languages:
 
-- English (default)
-- Italian
+- English (default).
+- Italian.
 
 Translation files are stored in the `translate/` directory.
 
@@ -225,6 +230,12 @@ The widget is implemented in QML using Qt Quick and KDE Plasma components.
 - `dev.sh`, `install.sh`, `uninstall.sh`, and `refresh.sh` provide development and package-management helpers.
 
 The countdown uses an absolute deadline timestamp rather than decrementing a counter every second. This allows the widget to calculate the correct remaining time after Plasma restarts.
+
+Paused timers store their remaining duration separately, allowing them to be restored without restarting the countdown.
+
+Expired timers store their expiration timestamp, which is used to determine whether a fresh countdown should be started after a long period of inactivity.
+
+The progress bar is rendered using the current remaining time, ensuring that its visual state is restored correctly even when the timer is paused.
 
 Desktop notifications are triggered through Plasma 6's `org.kde.plasma.plasma5support` data source and its `executable` engine, which invokes `notify-send`.
 

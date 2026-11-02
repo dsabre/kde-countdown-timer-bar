@@ -48,5 +48,8 @@
     <entry name="pausedRemaining" type="Int">
       <default>0</default>
     </entry>
+    <entry name="expiredAt" type="LongLong">
+      <default>0</default>
+    </entry>
   </group>
 </kcfg>
