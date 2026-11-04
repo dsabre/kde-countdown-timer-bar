@@ -229,22 +229,15 @@ PlasmoidItem {
     function executeExpireCommand() {
         const command = root.expireCommand.trim()
 
-        console.log("COUNTDOWN: command =", command)
-
         if (command.length === 0) {
             return
         }
 
-        console.log("Executing expiration command:", command)
-
-        console.log("COUNTDOWN: executing command")
         executable.exec(command)
     }
 
     // Expire countdown
     function expireTimer() {
-        console.log("COUNTDOWN: expireTimer called")
-
         plasmoid.configuration.timerState = "expired"
         plasmoid.configuration.deadline = 0
         plasmoid.configuration.pausedRemaining = 0

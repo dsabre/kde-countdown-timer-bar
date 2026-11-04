@@ -4,10 +4,6 @@ import QtQuick.Layouts
 import org.kde.kirigami 2.0 as Kirigami
 
 Item {
-    Component.onCompleted: {
-        console.log("CONFIG LOADED: CONTROLS")
-    }
-
     id: page
 
     property alias cfg_buttonText: buttonText.text
