@@ -16,7 +16,7 @@ PlasmoidItem {
     property string progressBarExpiredColor: plasmoid.configuration.progressBarExpiredColor
     property string buttonText: plasmoid.configuration.buttonText
     property string buttonIcon: plasmoid.configuration.buttonIcon
-    property bool notifyOnExpire: plasmoid.configuration.notifyOnExpire
+    property string expireCommand: plasmoid.configuration.expireCommand
     property bool showButtonIcon: plasmoid.configuration.showButtonIcon
     property bool showTimerValue: plasmoid.configuration.showTimerValue
     property bool showPercentage: plasmoid.configuration.showPercentage
@@ -162,7 +162,7 @@ PlasmoidItem {
         )
 
         if (remaining <= 0) {
-            root.expireTimer(true)
+            root.expireTimer()
             return
         }
 
@@ -226,8 +226,25 @@ PlasmoidItem {
         plasmoid.configuration.expiredAt = 0
     }
 
+    function executeExpireCommand() {
+        const command = root.expireCommand.trim()
+
+        console.log("COUNTDOWN: command =", command)
+
+        if (command.length === 0) {
+            return
+        }
+
+        console.log("Executing expiration command:", command)
+
+        console.log("COUNTDOWN: executing command")
+        executable.exec(command)
+    }
+
     // Expire countdown
-    function expireTimer(notify) {
+    function expireTimer() {
+        console.log("COUNTDOWN: expireTimer called")
+
         plasmoid.configuration.timerState = "expired"
         plasmoid.configuration.deadline = 0
         plasmoid.configuration.pausedRemaining = 0
@@ -235,9 +252,7 @@ PlasmoidItem {
 
         root.currentSeconds = 0
 
-        if (notify) {
-            root.notifyTimerExpired()
-        }
+        root.executeExpireCommand()
     }
 
     function notifyTimerExpired() {
@@ -321,7 +336,7 @@ PlasmoidItem {
                     ? root.progressBarColor
                     : root.progressBarExpiredColor
 
-                    opacity: root.currentSeconds > 0 ? 1.0 : undefined
+                    opacity: 1.0
 
                     SequentialAnimation on opacity {
                         running: root.currentSeconds === 0
@@ -345,8 +360,13 @@ PlasmoidItem {
             }
 
             PlasmaComponents.ToolTip {
-                text: root.currentSeconds === 0 ? root.tooltipString : root.formatTime(root.currentSeconds)
-                visible: parent.hovered || root.currentSeconds === 0
+                text: root.currentSeconds === 0
+                    ? root.tooltipString
+                    : root.formatTime(root.currentSeconds)
+
+                visible: root.currentSeconds === 0
+                    ? root.tooltipString.trim().length > 0
+                    : parent.hovered
             }
         }
 

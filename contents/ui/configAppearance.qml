@@ -4,6 +4,10 @@ import org.kde.kirigami 2.0 as Kirigami
 import org.kde.kquickcontrols 2.0 as KQControls
 
 Item {
+    Component.onCompleted: {
+        console.log("CONFIG LOADED: APPEARANCE")
+    }
+
     id: page
 
     // Le property alias cfg_ rimangono qui

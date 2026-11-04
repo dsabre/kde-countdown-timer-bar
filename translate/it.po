@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Countdown Timer Bar 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
+"POT-Creation-Date: 2026-11-04 13:16+0100\n"
 "PO-Revision-Date: 2026-11-01 22:30+0100\n"
 "Last-Translator: Daniele Sabre\n"
 "Language-Team: Italian\n"
@@ -12,57 +12,62 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:19
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:18
 msgid "Duration (seconds):"
 msgstr "Durata (secondi):"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:27
-msgid "Expiration message:"
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:28
+#, fuzzy
+msgid "Expiration tooltip:"
 msgstr "Messaggio alla scadenza:"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:28
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:29
 msgid "TIME'S UP!"
 msgstr "TEMPO SCADUTO!"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:33
-msgid "Notify when the timer expires"
-msgstr "Notifica alla scadenza del timer"
-
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:21
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:25
 msgid "Progress bar color:"
 msgstr "Colore della barra di avanzamento:"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:26
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:30
 msgid "Expired bar color:"
 msgstr "Colore della barra a tempo scaduto:"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:31
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:35
 msgid "Timer:"
 msgstr "Timer:"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:32
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:36
 msgid "Show timer value"
 msgstr "Mostra il tempo rimanente"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:37
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:41
 msgid "Show percentage instead of time"
 msgstr "Mostra la percentuale anziché il tempo"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:20
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:25
 msgid "Button text:"
 msgstr "Testo del pulsante:"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:25
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:30
 msgid "Button icon name:"
 msgstr "Nome dell'icona del pulsante:"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:30
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:35
 msgid "Display button icon"
 msgstr "Mostra l'icona del pulsante"
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:35
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:40
 msgid "Allow timer pause"
 msgstr "Consenti la pausa del timer"
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:46
+msgid "Command on expiration:"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:51
+msgid "Leave empty to do nothing"
+msgstr ""
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/config/config.qml:5
 msgid "General"
@@ -75,6 +80,9 @@ msgstr "Aspetto"
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/config/config.qml:17
 msgid "Controls"
 msgstr "Controlli"
+
+#~ msgid "Notify when the timer expires"
+#~ msgstr "Notifica alla scadenza del timer"
 
 #~ msgid "Resume"
 #~ msgstr "Riprendi"

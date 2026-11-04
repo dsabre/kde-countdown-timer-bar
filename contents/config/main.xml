@@ -22,8 +22,8 @@
     <entry name="buttonIcon" type="String">
       <default>chronometer-reset</default>
     </entry>
-    <entry name="notifyOnExpire" type="Bool">
-      <default>true</default>
+    <entry name="expireCommand" type="String">
+      <default></default>
     </entry>
     <entry name="showButtonIcon" type="Bool">
       <default>true</default>
