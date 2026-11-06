@@ -315,6 +315,8 @@ PlasmoidItem {
 
             contentItem: Item {
                 Rectangle {
+                    property real blinkOpacity: 1.0
+
                     id: progressFill
 
                     width: root.currentSeconds === 0
@@ -331,10 +333,10 @@ PlasmoidItem {
                     ? root.progressBarColor
                     : root.progressBarExpiredColor
 
-                    opacity: 1.0
+                    opacity: root.isPaused ? 0.4 : blinkOpacity
 
-                    SequentialAnimation on opacity {
-                        running: root.currentSeconds === 0
+                    SequentialAnimation on blinkOpacity {
+                        running: root.currentSeconds === 0 && !root.isPaused
                         loops: Animation.Infinite
 
                         PropertyAnimation {
@@ -353,7 +355,7 @@ PlasmoidItem {
 
                         onRunningChanged: {
                             if (!running) {
-                                progressFill.opacity = 1.0
+                                progressFill.blinkOpacity = 1.0
                             }
                         }
                     }
