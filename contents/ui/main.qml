@@ -315,6 +315,8 @@ PlasmoidItem {
 
             contentItem: Item {
                 Rectangle {
+                    id: progressFill
+
                     width: root.currentSeconds === 0
                         ? parent.width
                         : root.totalSeconds > 0
@@ -347,6 +349,12 @@ PlasmoidItem {
                             to: 1.0
                             duration: 500
                             easing.type: Easing.InOutQuad
+                        }
+
+                        onRunningChanged: {
+                            if (!running) {
+                                progressFill.opacity = 1.0
+                            }
                         }
                     }
                 }
