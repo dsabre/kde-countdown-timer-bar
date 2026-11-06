@@ -37,6 +37,9 @@
     <entry name="allowPause" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="invertProgressBar" type="Bool">
+      <default>false</default>
+    </entry>
 
     <!-- Timer persistence -->
     <entry name="timerState" type="String">

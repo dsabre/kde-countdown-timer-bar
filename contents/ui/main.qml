@@ -21,6 +21,7 @@ PlasmoidItem {
     property bool showTimerValue: plasmoid.configuration.showTimerValue
     property bool showPercentage: plasmoid.configuration.showPercentage
     property bool allowPause: plasmoid.configuration.allowPause
+    property bool invertProgressBar: plasmoid.configuration.invertProgressBar
 
     // Persistent timer state
     property string timerState: plasmoid.configuration.timerState
@@ -319,11 +320,17 @@ PlasmoidItem {
 
                     id: progressFill
 
-                    width: root.currentSeconds === 0
-                        ? parent.width
-                        : root.totalSeconds > 0
-                            ? parent.width * root.currentSeconds / root.totalSeconds
-                            : 0
+                    width: {
+                        if (root.totalSeconds <= 0) {
+                            return parent.width
+                        }
+
+                        const progress = root.invertProgressBar
+                        ? (root.totalSeconds - root.currentSeconds) / root.totalSeconds
+                        : root.currentSeconds / root.totalSeconds
+
+                        return parent.width * Math.max(0, Math.min(1, progress))
+                    }
 
                     height: parent.height
                     radius: 2
@@ -440,7 +447,17 @@ PlasmoidItem {
             anchors.fill: parent
             anchors.margins: 2
 
-            property real progress: compactRoot.progress
+            property real progress: {
+                if (root.totalSeconds <= 0) {
+                    return 0
+                }
+
+                const remaining = root.currentSeconds / root.totalSeconds
+
+                return root.invertProgressBar
+                ? 1 - remaining
+                : remaining
+            }
 
             property color ringColor: root.currentSeconds > 0
             ? root.progressBarColor

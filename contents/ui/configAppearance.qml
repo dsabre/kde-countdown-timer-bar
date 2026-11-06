@@ -11,6 +11,7 @@ Item {
     property alias cfg_progressBarExpiredColor: progressBarExpiredColor.color
     property alias cfg_showTimerValue: showTimerValue.checked
     property alias cfg_showPercentage: showPercentage.checked
+    property alias cfg_invertProgressBar: invertProgressBar.checked
 
     Kirigami.FormLayout {
         anchors.fill: parent
@@ -35,6 +36,11 @@ Item {
         CheckBox {
             id: showPercentage
             text: i18n("Show percentage instead of time")
+        }
+
+        CheckBox {
+            id: invertProgressBar
+            text: i18n("Invert progress bar")
         }
     }
 }

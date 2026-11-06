@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Countdown Timer Bar 2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 19:53+0100\n"
+"POT-Creation-Date: 2026-11-06 19:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,24 +29,28 @@ msgstr ""
 msgid "TIME'S UP!"
 msgstr ""
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:21
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:22
 msgid "Progress bar color:"
 msgstr ""
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:26
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:27
 msgid "Expired bar color:"
 msgstr ""
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:31
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:32
 msgid "Timer:"
 msgstr ""
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:32
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:33
 msgid "Show timer value"
 msgstr ""
 
-#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:37
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:38
 msgid "Show percentage instead of time"
+msgstr ""
+
+#: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:43
+msgid "Invert progress bar"
 msgstr ""
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:21
