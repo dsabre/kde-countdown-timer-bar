@@ -227,6 +227,10 @@ PlasmoidItem {
         plasmoid.configuration.expiredAt = 0
     }
 
+    function shellQuote(value) {
+        return "'" + value.replace(/'/g, "'\\''") + "'"
+    }
+
     function executeExpireCommand() {
         const command = root.expireCommand.trim()
 
@@ -234,11 +238,15 @@ PlasmoidItem {
             return
         }
 
-        executable.exec(command)
+        executable.exec("/bin/bash -c " + shellQuote(command))
     }
 
     // Expire countdown
     function expireTimer() {
+        if (root.timerState === "expired") {
+            return
+        }
+
         plasmoid.configuration.timerState = "expired"
         plasmoid.configuration.deadline = 0
         plasmoid.configuration.pausedRemaining = 0
@@ -321,7 +329,7 @@ PlasmoidItem {
                     id: progressFill
 
                     width: {
-                        if (root.totalSeconds <= 0) {
+                        if (root.currentSeconds === 0 || root.totalSeconds <= 0) {
                             return parent.width
                         }
 
@@ -371,12 +379,16 @@ PlasmoidItem {
 
             PlasmaComponents.ToolTip {
                 text: root.currentSeconds === 0
-                    ? root.tooltipString
-                    : root.formatTime(root.currentSeconds)
+                ? root.tooltipString
+                : root.formatTime(root.currentSeconds)
 
-                visible: root.currentSeconds === 0
-                    ? root.tooltipString.trim().length > 0
-                    : parent.hovered
+                visible: (
+                    root.currentSeconds === 0 &&
+                    root.tooltipString.trim().length > 0
+                ) || (
+                    root.currentSeconds > 0 &&
+                    parent.hovered
+                )
             }
         }
 
