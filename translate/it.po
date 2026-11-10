@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Countdown Timer Bar 2.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-11-06 19:58+0100\n"
-"PO-Revision-Date: 2026-11-01 22:30+0100\n"
+"PO-Revision-Date: 2026-11-10 09:00+0100\n"
 "Last-Translator: Daniele Sabre\n"
 "Language-Team: Italian\n"
 "Language: it\n"
@@ -17,9 +17,8 @@ msgid "Duration (seconds):"
 msgstr "Durata (secondi):"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:28
-#, fuzzy
 msgid "Expiration tooltip:"
-msgstr "Messaggio alla scadenza:"
+msgstr "Tooltip alla scadenza:"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configGeneral.qml:29
 msgid "TIME'S UP!"
@@ -47,7 +46,7 @@ msgstr "Mostra la percentuale anziché il tempo"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configAppearance.qml:43
 msgid "Invert progress bar"
-msgstr ""
+msgstr "Inverti la barra di avanzamento"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:21
 msgid "Button text:"
@@ -67,11 +66,11 @@ msgstr "Consenti la pausa del timer"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:42
 msgid "Command on expiration:"
-msgstr ""
+msgstr "Comando alla scadenza:"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/ui/configControls.qml:47
 msgid "Leave empty to do nothing"
-msgstr ""
+msgstr "Lascia vuoto per non eseguire alcuna azione"
 
 #: /home/dsabre/Projects/personale/kde-countdown-timer-bar/contents/config/config.qml:5
 msgid "General"
