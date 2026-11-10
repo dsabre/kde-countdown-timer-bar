@@ -1,177 +1,270 @@
 
 # Countdown Timer Bar
 
-A lightweight and customizable KDE Plasma 6 widget that displays a countdown as a progress indicator.
+A lightweight KDE Plasma 6 widget that displays a configurable countdown as a progress bar.
 
-The widget uses a horizontal progress bar when displayed in its expanded representation and a circular progress indicator in its compact representation, making it suitable for both horizontal and vertical panels.
-
-The timer gradually decreases as time passes. When it reaches zero, the progress indicator changes to the configured expiration color and starts blinking.
-
-The widget supports pausing and resuming the countdown, desktop notifications, and persistent timer state across Plasma restarts.
+The widget supports both horizontal and compact circular representations, customizable colors, pause and resume, and user-defined commands when the countdown expires.
 
 ## Features
 
-- **Visual countdown:** a horizontal progress bar in the expanded representation and a circular progress indicator in the compact representation.
-- **Panel orientation support:** adapts to horizontal and vertical panels through Plasma's compact and expanded representations.
-- **Expiration indicator:** the progress indicator changes to the configured expiration color and blinks when the countdown expires.
-- **Desktop notifications:** optionally sends a notification when the countdown expires.
-- **Pause and resume:** temporarily pause the countdown and resume it later.
-- **Persistent timer:** restores the timer state after Plasma restarts, including the remaining time and pause state.
-- **Automatic reset after long inactivity:** automatically starts a fresh countdown if the previous timer has been expired for more than twice its configured duration.
-- **Compact representation:** displays the remaining time or percentage in the center of the circular indicator, depending on the configuration.
-- **Configurable appearance and behavior:**
-  - Countdown duration, from 1 second to 24 hours.
-  - Normal and expired progress indicator colors.
-  - Reset button text and KDE icon.
-  - Show or hide the reset button icon.
-  - Show or hide the remaining time.
-  - Show or hide the countdown percentage.
-  - Enable or disable pause and resume.
-  - Enable or disable expiration notifications.
-- **Conditional reset button:** automatically hides the reset button when both its text and icon are empty or disabled.
-- **Context-aware reset interaction:**
-  - When the reset button is visible, clicking the compact indicator opens the expanded representation.
-  - When the reset button is hidden, clicking the progress indicator directly resets the timer.
-  - Clicking the expanded progress bar resets the timer only when the reset button is hidden.
+- **Countdown timer**
+  - Configurable duration from 1 second to 24 hours.
+  - Accurate countdown based on timestamps.
+  - Supports `MM:SS` and `HH:MM:SS` time formats.
+
+- **Progress indicator**
+  - Horizontal progress bar.
+  - Optional inverted progress direction: the bar can either decrease or fill up as time passes.
+  - Compact circular progress indicator when displayed in a vertical panel.
+  - Customizable progress and expiration colors.
+
+- **Expiration behavior**
+  - Blinking animation when the countdown expires.
+  - Configurable expiration color.
+  - Optional expiration tooltip.
+  - Custom shell command executed when the countdown expires.
+
+- **Pause and resume**
+  - Optional pause/resume button.
+  - Reduced opacity while the timer is paused.
+  - Automatically restores normal opacity when resumed or reset.
+
+- **Configurable interface**
+  - Show or hide the timer value.
+  - Display the remaining percentage instead of the time.
+  - Customizable reset button text and icon.
+  - Reset button can be hidden.
+
+- **Persistent timer state**
+  - Running, paused, and expired states are preserved across Plasma restarts.
+  - Remaining time is restored automatically.
+  - Expired timers are automatically reset after a sufficiently long period.
+
+- **Translations**
+  - Italian translations using gettext.
+  - English fallback.
 
 ## Requirements
 
-- KDE Plasma 6.
-- `kpackagetool6` to install and uninstall the widget.
-- `plasmoidviewer` to run the widget during development.
-- `notify-send` for desktop notifications.
+- KDE Plasma 6
+- `kpackagetool6` for installing and removing the widget.
+- `plasmoidviewer` for development and testing.
 - `jq` for the uninstall script.
-- `gettext` for building translations.
+- Bash for the provided scripts and expiration commands.
 
-On Arch Linux, these tools are commonly available through KDE Plasma, `libnotify`, `jq`, and `gettext` packages. Package names may vary by distribution.
+The expiration command can use any executable available in the user's environment. Additional utilities such as `notify-send` or `paplay` are optional and only required if used by the configured command.
 
 ## Installation
 
-Clone or download this repository, then run the installer from the project directory:
+Clone the repository:
 
 ```bash
 git clone https://github.com/dsabre/kde-countdown-timer-bar.git
 cd kde-countdown-timer-bar
+```
+
+Run the installer:
+
+```bash
 ./install.sh
 ```
 
-The installer builds the available translations and installs the Plasma package using:
+The installer builds the translations and installs the Plasma applet using:
 
 ```bash
 kpackagetool6 --type Plasma/Applet --install .
 ```
 
-After installation, add **Countdown Timer Bar** to your desktop or panel using Plasma's normal widget-adding interface.
+After installation, add **Countdown timer bar** to your desktop or panel using Plasma's widget-adding interface.
 
-The widget automatically uses the appropriate representation depending on the available space:
+### Updating an installed copy
 
-- **Expanded representation:** horizontal progress bar with timer controls.
-- **Compact representation:** circular progress indicator, suitable for narrow and vertical panels.
+After making changes or pulling updates, run:
+
+```bash
+./refresh.sh
+```
+
+The refresh script:
+
+1. Uninstalls the current widget.
+2. Builds translations and reinstalls the widget.
+3. Restarts the user Plasma shell.
+
+**Note:** Restarting Plasma can briefly disrupt the desktop panel and widgets. Save any work in progress before running this script.
+
+### Uninstallation
+
+To remove the widget:
+
+```bash
+./uninstall.sh
+```
+
+The uninstall script reads the applet ID from `metadata.json` and removes it using `kpackagetool6`.
 
 ## Configuration
 
 Open the widget's configuration dialog to customize its behavior.
 
+Settings are organized into three categories.
+
 ### General
 
 | Setting | Description | Default |
 |---|---|---|
-| Total seconds | Countdown duration, from 1 to 86,400 seconds | 3,600 (1 hour) |
-| Final message | Message displayed in the expiration notification | `TIME'S UP!` |
-| Expiration notification | Enable or disable the desktop notification | Enabled |
+| Duration (seconds) | Countdown duration, from 1 to 86,400 seconds. | `3600` |
+| Expiration tooltip | Message displayed when the countdown expires. Leave empty to disable the expiration tooltip. | `TIME'S UP!` |
+
+While the countdown is running, hovering over the progress bar displays the remaining time.
+
+When the countdown expires, the configured tooltip is displayed automatically. If the field is empty, no expiration tooltip is shown.
 
 ### Appearance
 
 | Setting | Description | Default |
 |---|---|---|
-| Bar color | Color of the progress indicator while the timer is running | `#00a6f4` |
-| Expired bar color | Color used when the countdown expires | `#ff0000` |
-| Button text | Label displayed on the reset button | `Reset` |
-| Button icon | KDE/System icon name for the reset button | `chronometer-reset` |
+| Progress bar color | Color used while the countdown is running. | `#00a6f4` |
+| Expired bar color | Color used when the countdown expires. | `#ff0000` |
+| Show timer value | Displays the remaining time alongside the progress indicator. | Enabled |
+| Show percentage | Displays the remaining percentage instead of the time. | Disabled |
+| Invert progress bar | Reverses the progress direction: the bar fills up instead of emptying. | Disabled |
 
-The reset button is automatically hidden when its text is empty and its icon is disabled or unavailable.
+The inverted progress option also affects the compact circular representation.
 
 ### Controls
 
 | Setting | Description | Default |
 |---|---|---|
-| Show button icon | Display the reset button icon | Enabled |
-| Show timer value | Display the remaining time | Enabled |
-| Show percentage | Display the countdown percentage instead of the remaining time | Disabled |
-| Allow pause | Enable pause and resume controls | Enabled |
+| Button text | Text displayed on the reset button. | `Reset` |
+| Button icon name | KDE/System icon name used by the reset button. | `chronometer-reset` |
+| Display button icon | Enables or disables the reset button icon. | Configurable |
+| Allow timer pause | Enables or disables the pause/resume button. | Configurable |
+| Command on expiration | Shell command executed when the countdown expires. | Empty |
+
+#### Reset button
+
+The reset button is displayed when it has either non-empty text or an enabled, non-empty icon.
+
+If both are disabled or empty, the reset button is hidden. The progress bar or compact representation can then be clicked to reset the countdown.
+
+#### Command on expiration
+
+The widget can execute a custom Bash command when the countdown reaches zero.
+
+Leave the field empty to do nothing.
+
+Commands are executed in the current user's session, without requiring root privileges.
+
+Examples:
+
+Send a desktop notification:
+
+```bash
+notify-send "Countdown Timer Bar" "Timer expired!"
+```
+
+Play a sound:
+
+```bash
+paplay /usr/share/sounds/freedesktop/stereo/complete.oga
+```
+
+Execute a script:
+
+```bash
+/home/user/scripts/timer-finished.sh
+```
+
+Use shell command substitution:
+
+```bash
+notify-send "Countdown Timer Bar" "Expired at $(date '+%H:%M:%S')"
+```
+
+Bash syntax is supported, including command substitution, variables, pipes and redirections.
+
+The command is executed once when the timer transitions to the expired state. No internal desktop notification is generated by the widget.
 
 ## Usage
 
 1. Add the widget to your desktop or panel.
-2. Open its settings and choose the countdown duration and appearance.
+2. Open its settings and configure the duration and appearance.
 3. Let the countdown run.
-4. Use the pause button to temporarily stop the countdown.
-5. Press the pause button again to resume.
-6. Click **Reset** to restart the countdown using the configured duration.
+4. Use the pause/resume button if needed.
+5. When the countdown reaches zero, the progress indicator changes to the expiration color and starts blinking.
+6. The configured expiration tooltip is displayed, if present.
+7. The configured shell command is executed, if present.
+8. Click **Reset** to start a new countdown.
 
-### Expanded representation
+### Representations
 
-The expanded representation displays a horizontal progress bar and the available timer controls.
+**Horizontal representation**
 
-When the reset button is visible, clicking the progress bar does not trigger a reset. Use the reset button instead.
+Used on the desktop and in horizontal panels. Displays the progress bar, optional timer value, pause/resume button and reset button.
 
-When the reset button is hidden, clicking the progress bar resets the countdown.
+**Compact circular representation**
 
-### Compact representation
+Used in vertical panels. Displays a circular progress indicator and the optional timer value.
 
-The compact representation displays a circular progress indicator.
+The compact representation can be clicked to expand the widget or reset the countdown when the reset button is hidden.
 
-The center of the circle displays either the remaining time or the countdown percentage, depending on the configuration. The text can also be hidden.
+### Progress direction
 
-When the reset button is visible, clicking the circle opens the expanded representation, where the timer controls are available.
+The progress indicator supports two modes:
 
-When the reset button is hidden, clicking the circle directly resets the countdown.
+- **Normal:** starts full and gradually empties.
+- **Inverted:** starts empty and gradually fills up.
 
-### Timer expiration
+In both modes, the indicator becomes completely filled when the countdown expires.
 
-When the timer reaches zero:
+### Pause and resume
 
-- The progress indicator changes to the configured expiration color.
-- The progress indicator starts blinking.
-- A desktop notification is sent if notifications are enabled.
+When paused:
 
-The blinking animation stops and the indicator returns to full opacity when the timer is reset.
+- The countdown stops.
+- The remaining time is preserved.
+- The progress bar opacity is reduced.
+- The timer can be resumed without losing the remaining time.
 
-### Timer persistence
+Resuming restores the normal opacity.
 
-The widget stores its timer state in Plasma's configuration.
+## How it works
 
-When Plasma restarts, the widget restores the previous state:
+The widget is implemented in QML using Qt Quick and KDE Plasma components.
 
-- **Running:** resumes the countdown using its original deadline.
-- **Paused:** restores the remaining time without starting the countdown.
-- **Expired:** remains expired without sending the notification again.
+### Timer and persistence
 
-If an expired timer has been inactive for more than twice its configured duration, the widget automatically starts a fresh countdown when its state is restored.
+The countdown uses an absolute timestamp rather than decrementing a counter once per second.
 
-This behavior helps prevent an old expired timer from remaining visible indefinitely after a long period of inactivity.
+The remaining time is recalculated from the deadline, keeping the countdown accurate even if Plasma is temporarily busy.
 
-Changing the configured countdown duration resets the timer and starts a new countdown, including when the timer is paused.
+The following state is persisted:
 
-## Translations
+- `timerState`: current state (`running`, `paused` or `expired`).
+- `deadline`: absolute expiration timestamp.
+- `pausedRemaining`: remaining seconds when paused.
+- `expiredAt`: timestamp of expiration.
 
-The widget uses gettext for translations.
+When Plasma restarts, the widget restores the previous state automatically.
 
-Currently available languages:
+Expired timers are reset if they have remained expired for more than twice their configured duration.
 
-- English (default).
-- Italian.
+### Expiration command
 
-Translation files are stored in the `translate/` directory.
+The expiration command is executed through Plasma 6's `org.kde.plasma.plasma5support` data source using its executable engine.
 
-To update translation catalogs and compile the available translations, run:
+The configured command is passed to Bash, allowing shell syntax and command substitution.
 
-```bash
-./translate/update.sh
-./translate/build.sh
-```
+The command is executed as the current desktop user.
 
-The installer automatically builds translations before installing the widget.
+### Progress animation
+
+The horizontal progress indicator uses a custom QML rectangle to control its width, color and opacity.
+
+When the timer expires, the indicator changes to the expiration color and starts a blinking animation.
+
+When paused, the blinking animation is disabled and the indicator remains at reduced opacity.
 
 ## Development
 
@@ -187,6 +280,8 @@ This script runs:
 plasmoidviewer -a .
 ```
 
+The development version can be used to test changes without installing the widget.
+
 ### Refresh an installed copy
 
 After making changes, run:
@@ -195,17 +290,13 @@ After making changes, run:
 ./refresh.sh
 ```
 
-This removes and reinstalls the package, then restarts the user Plasma shell.
-
-The refresh process is equivalent to:
+This script performs:
 
 ```bash
 ./uninstall.sh
 ./install.sh
 systemctl --user restart plasma-plasmashell
 ```
-
-**Note:** restarting Plasma can briefly disrupt the desktop panel and widgets. Save any work in progress before running this script.
 
 ### Install and uninstall manually
 
@@ -221,22 +312,40 @@ Uninstall:
 ./uninstall.sh
 ```
 
-The uninstall script reads the package ID from `metadata.json` and removes it using `kpackagetool6`. It requires `jq`.
+### Translations
+
+Translations are stored in the `translate` directory.
+
+The project uses gettext `.po` files.
+
+Build the translations:
+
+```bash
+./translate/build.sh
+```
+
+Update the translation template from the source:
+
+```bash
+./translate/update.sh
+```
+
+The installer automatically builds the translations before installing the applet.
 
 ## Project structure
 
 ```text
 .
-├── contents/
-│   ├── config/
+├── contents
+│   ├── config
 │   │   ├── config.qml
 │   │   └── main.xml
-│   └── ui/
+│   └── ui
 │       ├── configGeneral.qml
 │       ├── configAppearance.qml
 │       ├── configControls.qml
 │       └── main.qml
-├── translate/
+├── translate
 │   ├── build.sh
 │   ├── update.sh
 │   └── it.po
@@ -249,69 +358,70 @@ The uninstall script reads the package ID from `metadata.json` and removes it us
 └── README.md
 ```
 
-## How it works
-
-The widget is implemented in QML using Qt Quick and KDE Plasma components.
-
-- `contents/ui/main.qml` contains the countdown logic, progress indicators, expiration animation, compact representation, pause/resume controls, reset action, and notification trigger.
-- `contents/ui/configGeneral.qml` defines the general settings page.
-- `contents/ui/configAppearance.qml` defines appearance settings.
-- `contents/ui/configControls.qml` defines display and control options.
-- `contents/config/main.xml` declares persistent configuration options and their defaults.
-- `contents/config/config.qml` registers the configuration pages.
-- `metadata.json` contains the Plasma package metadata.
-- `translate/` contains gettext translation catalogs and build scripts.
-- `dev.sh`, `install.sh`, `uninstall.sh`, and `refresh.sh` provide development and package-management helpers.
-
-The countdown uses an absolute deadline timestamp rather than decrementing a counter every second. This allows the widget to calculate the correct remaining time after Plasma restarts.
-
-Paused timers store their remaining duration separately, allowing them to be restored without restarting the countdown.
-
-Expired timers store their expiration timestamp, which is used to determine whether a fresh countdown should be started after a long period of inactivity.
-
-The progress indicators are rendered using the current remaining time, ensuring that their visual state is restored correctly even when the timer is paused.
-
-Desktop notifications are triggered through Plasma 6's `org.kde.plasma.plasma5support` data source and its `executable` engine, which invokes `notify-send`.
-
 ## Troubleshooting
 
-### The notification does not appear
+### The widget does not load
 
-Check that `notify-send` is installed and that desktop notifications are working:
-
-```bash
-command -v notify-send
-notify-send "Countdown Timer Bar test" "Notifications are working."
-```
-
-Also check that **Expiration notification** is enabled in the widget settings.
-
-### The widget does not load or changes are not visible
-
-Run the development version with:
+Run the development version:
 
 ```bash
 ./dev.sh
 ```
 
-Inspect any QML errors printed in the terminal.
+Inspect the terminal output for QML errors or missing dependencies.
 
-If you use `./refresh.sh`, remember that it restarts the Plasma shell.
+### Changes are not visible
+
+Run:
+
+```bash
+./refresh.sh
+```
+
+Remember that this script restarts the Plasma shell.
+
+### The expiration command does not execute
+
+Test the command directly in a terminal first.
+
+Check that Bash is available:
+
+```bash
+command -v bash
+```
+
+For scripts, verify that the file exists and is executable:
+
+```bash
+chmod +x /path/to/script.sh
+```
+
+If a command cannot be found when launched by Plasma, try using its absolute path.
+
+### The expiration tooltip does not appear
+
+Check that the **Expiration tooltip** setting is not empty.
+
+An empty value intentionally disables the expiration tooltip.
 
 ### The uninstall script fails
 
-Make sure `jq` is installed and run the script from the repository directory.
+Make sure `jq` is installed:
 
-### The timer does not restore correctly
+```bash
+command -v jq
+```
 
-The timer state is stored in Plasma's applet configuration. Check that the widget's configuration has not been manually modified or corrupted.
+Run the script from the repository directory.
 
 ## Contributing
 
-Issues, ideas, and pull requests are welcome.
+Issues, ideas and pull requests are welcome.
 
 If you adapt this widget or reuse parts of its code, please check the project's license before distributing your changes.
 
 ## License
 
-This project is licensed under the MIT License. See [`LICENSE`](LICENSE) for details.
+This project is licensed under the MIT License.
+
+See [`LICENSE`](LICENSE) for the full license terms.
